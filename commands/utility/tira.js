@@ -5,7 +5,7 @@ module.exports = {
 		.setName('tira')
 		.setDescription('Fai un tiro'),
 	async execute(interaction) {
-		var chosenWhites, chosenBlacks, chosenGreys, chosenUscita;
+		var chosenWhites, chosenBlacks, chosenGreys, chosenUscita, chosenEstratti;
 		const Interaction = interaction;
 
 		if (interaction.commandName && interaction.commandName === "tira") {
@@ -13,6 +13,7 @@ module.exports = {
 			chosenBlacks = "0";
 			chosenGreys = "0";
 			chosenUscita = "0";
+			chosenEstratti = "0"
 		}
 
 		const normalRollButton = new ButtonBuilder()
@@ -79,6 +80,19 @@ module.exports = {
 			.setLabel("Uscita: " + chosenUscita)
 			.setStyle(ButtonStyle.Secondary)
 			.setDisabled(true);
+		const estrattiPlusButton = new ButtonBuilder()
+			.setCustomId('estrattiPlusButton')
+			.setLabel('+')
+			.setStyle(ButtonStyle.Success);
+		const estrattiMinusButton = new ButtonBuilder()
+			.setCustomId('estrattiMinusButton')
+			.setLabel('-')
+			.setStyle(ButtonStyle.Danger);
+		const estrattiCounterFakeButton = new ButtonBuilder()
+			.setCustomId('estrattiCounterFakeButton')
+			.setLabel("Estratti: " + chosenEstratti)
+			.setStyle(ButtonStyle.Secondary)
+			.setDisabled(true);
 		const tiraButton = new ButtonBuilder()
 			.setCustomId('tiraButton')
 			.setLabel("Estrai")
@@ -94,6 +108,8 @@ module.exports = {
 			.addComponents(greyMinusButton, greyCounterFakeButton, greyPlusButton);
 		const uscitaRow = new ActionRowBuilder()
 			.addComponents(uscitaMinusButton, uscitaCounterFakeButton, uscitaPlusButton);
+		const estrattiRow = new ActionRowBuilder()
+			.addComponents(estrattiMinusButton, estrattiCounterFakeButton, estrattiPlusButton);
 		//DA AGGIUNGERE PULSANTI PER ANNULLARE ED EFFETTUARE IL TIPO. IMPLEMENTARE LE LOGICHE SUL CLICK DI OGNI PULSANTE
 		//PER LE LOGICHE DI CLICK UTILIZZARE LE COLLEZIONI DI RISPOSTE
 		//OGNI CLICK A QUALSIASI PULSANTE DEVE EDITARE LO STESSO MESSAGGIO DI CUI FA PARTE IL BOTTONE
@@ -109,7 +125,7 @@ module.exports = {
 
 		const response = await interaction.reply({
 			content: "",
-			components: [whiteRow, blackRow, rollTypeRow],
+			components: [whiteRow, blackRow, estrattiRow, rollTypeRow],
 		});
 
 		const collector = interaction.channel.createMessageComponentCollector({ time: 3500000 });
@@ -128,11 +144,11 @@ module.exports = {
 				chosenGreys = "0";
 				whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
 				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -143,11 +159,11 @@ module.exports = {
 				chosenGreys = "0";
 				whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
 				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -158,11 +174,11 @@ module.exports = {
 				chosenWhites = "0";
 				greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
 				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -173,11 +189,11 @@ module.exports = {
 				chosenWhites = "0";
 				greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
 				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -187,19 +203,19 @@ module.exports = {
 				chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) + 1);
 				blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
 				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -209,22 +225,84 @@ module.exports = {
 				chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) - 1);
 				blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
 				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 
+			}
+
+			else if (i.customId == 'estrattiPlusButton') {
+				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+					var estrattiLabel = i.message.components[3].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+					var estrattiLabel = i.message.components[3].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+			}
+
+			else if (i.customId == 'estrattiMinusButton') {
+				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+					var estrattiLabel = i.message.components[3].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+					var estrattiLabel = i.message.components[3].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
+				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+					await i.deferUpdate();
+				}
 			}
 
 			else if (i.customId == 'uscitaPlusButton') {
@@ -232,11 +310,11 @@ module.exports = {
 				chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) + 1);
 				uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
 				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -246,11 +324,11 @@ module.exports = {
 				chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) - 1);
 				uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
 				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 				else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					await i.deferUpdate();
 				}
 			}
@@ -258,11 +336,11 @@ module.exports = {
 			else if (i.customId == 'normalRollButton') {
 				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
 					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 				}
@@ -272,11 +350,11 @@ module.exports = {
 					whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
 					confusionRollButton.setStyle(ButtonStyle.Secondary);
 					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 				}
@@ -285,11 +363,11 @@ module.exports = {
 			else if (i.customId == 'confusionRollButton') {
 				if (confusionRollButton.data.style === 1 && normalRollButton.data.style === 2) {
 					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 				}
@@ -299,11 +377,11 @@ module.exports = {
 					greyCounterFakeButton.setLabel("Grigi: " + chosenGreys)
 					normalRollButton.setStyle(ButtonStyle.Secondary);
 					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 						await i.deferUpdate();
 					}
 				}
@@ -313,10 +391,10 @@ module.exports = {
 				if (uscitaRollButton.data.style === 1) {
 					uscitaRollButton.setStyle(ButtonStyle.Secondary);
 					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
 					}
 					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
 					}
 					await i.deferUpdate();
 				}
@@ -325,10 +403,10 @@ module.exports = {
 					uscitaRollButton.setStyle(ButtonStyle.Primary);
 					uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita)
 					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					}
 					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, rollTypeRow] });
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
 					}
 					await i.deferUpdate();
 				}
@@ -341,17 +419,26 @@ module.exports = {
 					var whiteLabel = i.message.components[0].components[1].data.label;
 					chosenWhites = "" + (Number(whiteLabel.split(" ")[1]));
 					chosenGreys = "0";
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
 				}
 				if (confusionRollButton.data.style === 1) {
 					var greyLabel = i.message.components[0].components[1].data.label;
 					chosenGreys = "" + (Number(greyLabel.split(" ")[1]));
 					chosenWhites = "0";
+					var estrattiLabel = i.message.components[2].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
 				}
 				if (uscitaRollButton.data.style === 1) {
 					var uscitaLabel = i.message.components[2].components[1].data.label;
 					chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]));
+					var estrattiLabel = i.message.components[3].components[1].data.label;
+					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
 				}
-				var result = eseguiEstrazione(Number(chosenWhites), Number(chosenGreys), Number(chosenBlacks), Number(chosenUscita));
+				var estrazione = eseguiEstrazione(Number(chosenWhites), Number(chosenGreys), Number(chosenBlacks), Number(chosenUscita), Number(chosenEstratti));
+				var res = "" + estrazione[0];
+				await Interaction.editReply({ content: res });
+				await i.deferUpdate();
 			}
 		});
 
@@ -371,7 +458,7 @@ module.exports = {
 			}
 		}
 
-		function eseguiEstrazione(whites, greys, blacks, uscita) {
+		function eseguiEstrazione(whites, greys, blacks, uscita, estratti) {
 			var confusione = false;
 			var uscita = false;
 			var annulla = false;
@@ -382,52 +469,51 @@ module.exports = {
 				annulla = true;
 			}
 
-			if (greys > 0) {
-				confusione = true;
-			}
+			if (!annulla) {
 
-			if (uscita > 0) {
-				uscita = true;
-			}
+				if (greys > 0) {
+					confusione = true;
+				}
+
+				if (uscita > 0) {
+					uscita = true;
+				}
 
 
-			if (!confusione) {
-				for (var i = 0; i < whites; i++) {
-					for (var j = 0; j < sacchetto.length; j++) {
-						if (sacchetto[j] === undefined) {
-							sacchetto[j] = 1;
+				if (!confusione) {
+					for (var i = 0; i < whites; i++) {
+						sacchetto.push(1);
+					}
+				}
+
+				else if (confusione) {
+					for (var i = 0; i < whites; i++) {
+						var result = Math.random() < 0.5;
+						if (result) {
+							sacchetto.push(1)
+						}
+						else if (!result) {
+							sacchetto.push(0)
 						}
 					}
 				}
-			}
 
-			else if (confusione) {
-				for (var i = 0; i < whites; i++) {
-					for (var j = 0; j < sacchetto.length; j++) {
-						if (sacchetto[j] === undefined) {
-							var result = Math.random() < 0.5;
-							if (result) {
-								sacchetto[j] = 1;
-							}
-							else if (!result) {
-								sacchetto[j] = 0;
-							}
-						}
-					}
+				for (var i = 0; i < blacks; i++) {
+					sacchetto.push(0);
 				}
-			}
 
-			for (var i = 0; i < blacks; i++) {
-				for (var j = 0; j < sacchetto.length; j++) {
-					if (sacchetto[j] === undefined) {
-						sacchetto[j] = 0;
-					}
+
+				for (var i = 0; i < 5; i++) {
+					shuffle(sacchetto);
 				}
-			}
 
+				for(var i = 0; i < estratti; i++) {
+					var tokenRandomIndex = Math.floor(Math.random() * (0 - sacchetto.length + 1) + sacchetto.length);
+					estrazione.push(sacchetto[tokenRandomIndex]);
+					sacchetto.splice(tokenRandomIndex, 1);
+				}
 
-			for(var i = 0; i < 5; i++) {
-				shuffle(sacchetto);
+				return estrazione;
 			}
 
 		}
