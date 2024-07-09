@@ -97,6 +97,14 @@ module.exports = {
 			.setCustomId('tiraButton')
 			.setLabel("Estrai")
 			.setStyle(ButtonStyle.Primary);
+		const rischiaButton = new ButtonBuilder()
+			.setCustomId('rischiaButton')
+			.setLabel("Rischia")
+			.setStyle(ButtonStyle.Primary);
+		const chiudiButton = new ButtonBuilder()
+			.setCustomId('chiudiButton')
+			.setLabel("Chiudi")
+			.setStyle(ButtonStyle.Primary);
 
 		const rollTypeRow = new ActionRowBuilder()
 			.addComponents(confusionRollButton, normalRollButton, uscitaRollButton, tiraButton);
@@ -110,6 +118,10 @@ module.exports = {
 			.addComponents(uscitaMinusButton, uscitaCounterFakeButton, uscitaPlusButton);
 		const estrattiRow = new ActionRowBuilder()
 			.addComponents(estrattiMinusButton, estrattiCounterFakeButton, estrattiPlusButton);
+		const rischiaChiudiRow = new ActionRowBuilder()
+			.addComponents(rischiaButton, chiudiButton);
+		const chiudiRow = new ActionRowBuilder()
+			.addComponents(chiudiButton);
 		//DA AGGIUNGERE PULSANTI PER ANNULLARE ED EFFETTUARE IL TIPO. IMPLEMENTARE LE LOGICHE SUL CLICK DI OGNI PULSANTE
 		//PER LE LOGICHE DI CLICK UTILIZZARE LE COLLEZIONI DI RISPOSTE
 		//OGNI CLICK A QUALSIASI PULSANTE DEVE EDITARE LO STESSO MESSAGGIO DI CUI FA PARTE IL BOTTONE
@@ -133,312 +145,344 @@ module.exports = {
 		collector.on('collect', async i => {
 			// check if the author triggered the interaction
 
+			try {
+				if (i.message.interaction.id != interaction.id) {
 
-			if (i.member.id != interaction.user.id) {
-				await i.deferUpdate();
-			}
+				}
 
-			if (i.customId == 'whitePlusButton') {
-				var whiteLabel = i.message.components[0].components[1].data.label;
-				chosenWhites = "" + (Number(whiteLabel.split(" ")[1]) + 1);
-				chosenGreys = "0";
-				whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
-				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'whiteMinusButton') {
-				var whiteLabel = i.message.components[0].components[1].data.label;
-				chosenWhites = "" + (Number(whiteLabel.split(" ")[1]) - 1);
-				chosenGreys = "0";
-				whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
-				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'greyPlusButton') {
-				var greyLabel = i.message.components[0].components[1].data.label;
-				chosenGreys = "" + (Number(greyLabel.split(" ")[1]) + 1);
-				chosenWhites = "0";
-				greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
-				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'greyMinusButton') {
-				var greyLabel = i.message.components[0].components[1].data.label;
-				chosenGreys = "" + (Number(greyLabel.split(" ")[1]) - 1);
-				chosenWhites = "0";
-				greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
-				if (uscitaRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'blackPlusButton') {
-				var blackLabel = i.message.components[1].components[1].data.label;
-				chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) + 1);
-				blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
-				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'blackMinusButton') {
-				var blackLabel = i.message.components[1].components[1].data.label;
-				chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) - 1);
-				blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
-				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+				if (i.member.id != interaction.user.id && i.message.interaction.id == interaction.id) {
 					await i.deferUpdate();
 				}
 
-			}
-
-			else if (i.customId == 'estrattiPlusButton') {
-				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					var estrattiLabel = i.message.components[3].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					var estrattiLabel = i.message.components[3].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'estrattiMinusButton') {
-				if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					var estrattiLabel = i.message.components[3].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					var estrattiLabel = i.message.components[3].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
-					estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'uscitaPlusButton') {
-				var uscitaLabel = i.message.components[2].components[1].data.label;
-				chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) + 1);
-				uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
-				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'uscitaMinusButton') {
-				var uscitaLabel = i.message.components[2].components[1].data.label;
-				chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) - 1);
-				uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
-				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-				else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'normalRollButton') {
-				if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-				}
-				else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-					chosenWhites = "0";
-					normalRollButton.setStyle(ButtonStyle.Primary);
-					whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
-					confusionRollButton.setStyle(ButtonStyle.Secondary);
-					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-				}
-			}
-
-			else if (i.customId == 'confusionRollButton') {
-				if (confusionRollButton.data.style === 1 && normalRollButton.data.style === 2) {
-					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-				}
-				else if (confusionRollButton.data.style === 2 && normalRollButton.data.style === 1) {
-					chosenGreys = "0";
-					confusionRollButton.setStyle(ButtonStyle.Primary);
-					greyCounterFakeButton.setLabel("Grigi: " + chosenGreys)
-					normalRollButton.setStyle(ButtonStyle.Secondary);
-					if (uscitaRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-					else if (uscitaRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-						await i.deferUpdate();
-					}
-				}
-			}
-
-			else if (i.customId == 'uscitaRollButton') {
-				if (uscitaRollButton.data.style === 1) {
-					uscitaRollButton.setStyle(ButtonStyle.Secondary);
-					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
-					}
-					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
-					}
-					await i.deferUpdate();
-				}
-				else if (uscitaRollButton.data.style === 2) {
-					chosenUscita = "0";
-					uscitaRollButton.setStyle(ButtonStyle.Primary);
-					uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita)
-					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
-						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					}
-					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
-						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
-					}
-					await i.deferUpdate();
-				}
-			}
-
-			else if (i.customId == 'tiraButton') {
-				var blackLabel = i.message.components[1].components[1].data.label;
-				chosenBlacks = "" + (Number(blackLabel.split(" ")[1]));
-				if (normalRollButton.data.style === 1) {
+				if (i.customId == 'whitePlusButton' && i.message.interaction.id == interaction.id) {
 					var whiteLabel = i.message.components[0].components[1].data.label;
-					chosenWhites = "" + (Number(whiteLabel.split(" ")[1]));
+					chosenWhites = "" + (Number(whiteLabel.split(" ")[1]) + 1);
 					chosenGreys = "0";
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
+					if (uscitaRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
 				}
-				if (confusionRollButton.data.style === 1) {
+
+				else if (i.customId == 'whiteMinusButton' && i.message.interaction.id == interaction.id) {
+					var whiteLabel = i.message.components[0].components[1].data.label;
+					chosenWhites = "" + (Number(whiteLabel.split(" ")[1]) - 1);
+					chosenGreys = "0";
+					whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
+					if (uscitaRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'greyPlusButton' && i.message.interaction.id == interaction.id) {
 					var greyLabel = i.message.components[0].components[1].data.label;
-					chosenGreys = "" + (Number(greyLabel.split(" ")[1]));
+					chosenGreys = "" + (Number(greyLabel.split(" ")[1]) + 1);
 					chosenWhites = "0";
-					var estrattiLabel = i.message.components[2].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
+					if (uscitaRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
 				}
-				if (uscitaRollButton.data.style === 1) {
+
+				else if (i.customId == 'greyMinusButton' && i.message.interaction.id == interaction.id) {
+					var greyLabel = i.message.components[0].components[1].data.label;
+					chosenGreys = "" + (Number(greyLabel.split(" ")[1]) - 1);
+					chosenWhites = "0";
+					greyCounterFakeButton.setLabel("Grigi: " + chosenGreys);
+					if (uscitaRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'blackPlusButton' && i.message.interaction.id == interaction.id) {
+					var blackLabel = i.message.components[1].components[1].data.label;
+					chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) + 1);
+					blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
+					if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'blackMinusButton' && i.message.interaction.id == interaction.id) {
+					var blackLabel = i.message.components[1].components[1].data.label;
+					chosenBlacks = "" + (Number(blackLabel.split(" ")[1]) - 1);
+					blackCounterFakeButton.setLabel("Neri: " + chosenBlacks);
+					if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+
+				}
+
+				else if (i.customId == 'estrattiPlusButton' && i.message.interaction.id == interaction.id) {
+					if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						var estrattiLabel = i.message.components[3].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						var estrattiLabel = i.message.components[3].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) + 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'estrattiMinusButton' && i.message.interaction.id == interaction.id) {
+					if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						var estrattiLabel = i.message.components[3].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 1 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						var estrattiLabel = i.message.components[3].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2 && normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]) - 1);
+						estrattiCounterFakeButton.setLabel("Estratti: " + chosenEstratti);
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'uscitaPlusButton' && i.message.interaction.id == interaction.id) {
 					var uscitaLabel = i.message.components[2].components[1].data.label;
-					chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]));
-					var estrattiLabel = i.message.components[3].components[1].data.label;
-					chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) + 1);
+					uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
+					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
 				}
-				var estrazione = eseguiEstrazione(Number(chosenWhites), Number(chosenGreys), Number(chosenBlacks), Number(chosenUscita), Number(chosenEstratti));
-				var res = "" + estrazione[0];
-				await Interaction.editReply({ content: res });
-				await i.deferUpdate();
+
+				else if (i.customId == 'uscitaMinusButton' && i.message.interaction.id == interaction.id) {
+					var uscitaLabel = i.message.components[2].components[1].data.label;
+					chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]) - 1);
+					uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita);
+					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'normalRollButton' && i.message.interaction.id == interaction.id) {
+					if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+						if (uscitaRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+						else if (uscitaRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+					}
+					else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+						chosenWhites = "0";
+						normalRollButton.setStyle(ButtonStyle.Primary);
+						whiteCounterFakeButton.setLabel("Bianchi: " + chosenWhites);
+						confusionRollButton.setStyle(ButtonStyle.Secondary);
+						if (uscitaRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+						else if (uscitaRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+					}
+				}
+
+				else if (i.customId == 'confusionRollButton' && i.message.interaction.id == interaction.id) {
+					if (confusionRollButton.data.style === 1 && normalRollButton.data.style === 2) {
+						if (uscitaRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+						else if (uscitaRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+					}
+					else if (confusionRollButton.data.style === 2 && normalRollButton.data.style === 1) {
+						chosenGreys = "0";
+						confusionRollButton.setStyle(ButtonStyle.Primary);
+						greyCounterFakeButton.setLabel("Grigi: " + chosenGreys)
+						normalRollButton.setStyle(ButtonStyle.Secondary);
+						if (uscitaRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+						else if (uscitaRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+							await i.deferUpdate();
+						}
+					}
+				}
+
+				else if (i.customId == 'uscitaRollButton' && i.message.interaction.id == interaction.id) {
+					if (uscitaRollButton.data.style === 1) {
+						uscitaRollButton.setStyle(ButtonStyle.Secondary);
+						if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, estrattiRow, rollTypeRow] });
+						}
+						else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, estrattiRow, rollTypeRow] });
+						}
+						await i.deferUpdate();
+					}
+					else if (uscitaRollButton.data.style === 2) {
+						chosenUscita = "0";
+						uscitaRollButton.setStyle(ButtonStyle.Primary);
+						uscitaCounterFakeButton.setLabel("Uscita: " + chosenUscita)
+						if (normalRollButton.data.style === 1 && confusionRollButton.data.style === 2) {
+							await Interaction.editReply({ content: "", components: [whiteRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						}
+						else if (normalRollButton.data.style === 2 && confusionRollButton.data.style === 1) {
+							await Interaction.editReply({ content: "", components: [greyRow, blackRow, uscitaRow, estrattiRow, rollTypeRow] });
+						}
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'tiraButton' && i.message.interaction.id == interaction.id) {
+					var blackLabel = i.message.components[1].components[1].data.label;
+					chosenBlacks = "" + (Number(blackLabel.split(" ")[1]));
+					if (normalRollButton.data.style === 1) {
+						var whiteLabel = i.message.components[0].components[1].data.label;
+						chosenWhites = "" + (Number(whiteLabel.split(" ")[1]));
+						chosenGreys = "0";
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					}
+					if (confusionRollButton.data.style === 1) {
+						var greyLabel = i.message.components[0].components[1].data.label;
+						chosenGreys = "" + (Number(greyLabel.split(" ")[1]));
+						chosenWhites = "0";
+						var estrattiLabel = i.message.components[2].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					}
+					if (uscitaRollButton.data.style === 1) {
+						var uscitaLabel = i.message.components[2].components[1].data.label;
+						chosenUscita = "" + (Number(uscitaLabel.split(" ")[1]));
+						var estrattiLabel = i.message.components[3].components[1].data.label;
+						chosenEstratti = "" + (Number(estrattiLabel.split(" ")[1]));
+					}
+					var risultato = eseguiEstrazione(Number(chosenWhites), Number(chosenGreys), Number(chosenBlacks), Number(chosenUscita), Number(chosenEstratti));
+					if (risultato[0]) {
+						await Interaction.editReply({ content: risultato[1], components: [rischiaChiudiRow] });
+						await i.deferUpdate();
+					}
+					else {
+						await Interaction.editReply({ content: risultato[1], components: [] });
+						await i.deferUpdate();
+					}
+				}
+
+				else if (i.customId == 'chiudiButton' && i.message.interaction.id == interaction.id) {
+					await Interaction.editReply({ content: i.message.content, components: [] });
+					i.deferUpdate();
+					Interaction.deferUpdate()
+				}
+
+				else if (i.customId == 'rischiaButton' && i.message.interaction.id == interaction.id) {
+					var message = i.message.content;
+					var estratti = message.split("\n")[0];
+					var bianchiEstratti = Number(estratti.split(" ")[2].replace(",", ""));
+					var neriEstratti = Number(estratti.split(" ")[4].replace(")", ""));
+					var sacchetto = message.split("\n")[1];
+					var bianchiSacchetto = Number(sacchetto.split(" ")[2].replace(",", ""));
+					var neriSacchetto = Number(sacchetto.split(" ")[4].replace(")", ""));
+					var risultatoRischiaText = rischia(bianchiEstratti, neriEstratti, bianchiSacchetto, neriSacchetto);
+					await Interaction.editReply({ content: risultatoRischiaText, components: [] });
+					await i.deferUpdate();
+				}
+			}
+			catch (error) {
+				i.deferUpdate();
 			}
 		});
 
@@ -464,6 +508,14 @@ module.exports = {
 			var annulla = false;
 			var sacchetto = [];
 			var estrazione = [];
+			var uscitaTesti = [];
+			uscitaTesti[0] = "Uscita di scena: insegna agli angeli ad abbracciare il pavimento...";
+			uscitaTesti[1] = "Uscita di scena: si era solo scordato di andare in bagno...";
+			uscitaTesti[2] = "Uscita di scena: se nel mondo esistesse un pò di bene e ognuno si considerasse suo fratello...";
+			uscitaTesti[3] = "Uscita di scena: si è preso una freccia nel ginocchio...";
+			uscitaTesti[4] = "Uscita di scena: non deve pagare più le tasse...";
+			uscitaTesti[5] = "Uscina di scena: è l'umidità che te ammazza...";
+			var risultatoEstrazioneText = "";
 
 			if (whites === 0 && greys === 0 && blacks === 0) {
 				annulla = true;
@@ -507,15 +559,109 @@ module.exports = {
 					shuffle(sacchetto);
 				}
 
-				for(var i = 0; i < estratti; i++) {
-					var tokenRandomIndex = Math.floor(Math.random() * (0 - sacchetto.length + 1) + sacchetto.length);
-					estrazione.push(sacchetto[tokenRandomIndex]);
-					sacchetto.splice(tokenRandomIndex, 1);
+				var tokenRandomIndex = [];
+				for (var i = 0; i < estratti; i++) {
+					min = Math.ceil(0);
+					max = Math.floor(sacchetto.length - 1);
+					tokenRandomIndex[i] = Math.floor(Math.random() * (max - min + 1)) + min;
+					estrazione.push(sacchetto[tokenRandomIndex[i]]);
 				}
 
-				return estrazione;
+				for (var i = 0; i < tokenRandomIndex.length; i++) {
+					sacchetto.splice(tokenRandomIndex[i], 1);
+				}
+
+				var bianchiEstratti = 0;
+				var neriEstratti = 0;
+				for (var i = 0; i < estrazione.length; i++) {
+					if (estrazione[i] === 1) {
+						bianchiEstratti++;
+					}
+					else if (estrazione[i] === 0) {
+						neriEstratti++;
+					}
+				}
+
+				var bianchiRimasti = 0;
+				var neriRimasti = 0;
+				for (var i = 0; i < sacchetto.length; i++) {
+					if (sacchetto[i] === 1) {
+						bianchiRimasti++;
+					}
+					else if (sacchetto[i] === 0) {
+						neriRimasti++;
+					}
+				}
+
+				if (uscita) {
+					if (neriEstratti >= uscita) {
+						var uscitaRandomIndex = Math.floor(Math.random() * uscitaTesti.length);
+						var uscitaTesto = uscitaTesti[uscitaRandomIndex];
+						risultatoEstrazioneText += "Estratti: (Bianchi: " + bianchiEstratti + ", Neri: " + neriEstratti + ")";
+						risultatoEstrazioneText += "\n";
+						risultatoEstrazioneText += "Sacchetto: (Bianchi: " + bianchiRimasti + ", Neri: " + neriRimasti + ")";
+						risultatoEstrazioneText += "\n";
+						risultatoEstrazioneText += uscitaTesto;
+					}
+					else {
+						risultatoEstrazioneText += "Estratti: (Bianchi: " + bianchiEstratti + ", Neri: " + neriEstratti + ")";
+						risultatoEstrazioneText += "\n";
+						risultatoEstrazioneText += "Sacchetto: (Bianchi: " + bianchiRimasti + ", Neri: " + neriRimasti + ")";
+					}
+				}
+				else {
+					risultatoEstrazioneText += "Estratti: (Bianchi: " + bianchiEstratti + ", Neri: " + neriEstratti + ")";
+					risultatoEstrazioneText += "\n";
+					risultatoEstrazioneText += "Sacchetto: (Bianchi: " + bianchiRimasti + ", Neri: " + neriRimasti + ")";
+				}
+
+
+				var risultato = [];
+				if (estratti >= 5) {
+					risultato[0] = false;
+				}
+				else {
+					risultato[0] = true;
+				}
+				risultato[1] = risultatoEstrazioneText;
+
+				return risultato;
 			}
 
+		}
+
+		function rischia(bianchiEstratti, neriEstratti, bianchiSacchetto, neriSacchetto) {
+			var estratti = bianchiEstratti + neriEstratti;
+			var daEstrarre = 5 - estratti;
+			var risultatoRischiaText = "";
+			for (var i = 0; i < daEstrarre; i++) {
+				var random = Math.random() < 0.5;
+
+				if (bianchiSacchetto === 0 && neriSacchetto === 0) {
+
+				}
+				else if (bianchiSacchetto === 0 && neriSacchetto !== 0) {
+					neriSacchetto--;
+					neriEstratti++;
+				}
+				else if (bianchiSacchetto !== 0 && neriSacchetto === 0) {
+					bianchiSacchetto--;
+					bianchiEstratti++;
+				}
+				else if (bianchiSacchetto !== 0 && neriSacchetto !== 0 && random) {
+					bianchiSacchetto--;
+					bianchiEstratti++;
+				}
+				else if (bianchiSacchetto !== 0 && neriSacchetto !== 0 && !random) {
+					neriSacchetto--;
+					neriEstratti++;
+				}
+			}
+
+			risultatoRischiaText += "Estratti: (Bianchi: " + bianchiEstratti + ", Neri: " + neriEstratti + ")";
+			risultatoRischiaText += "\n";
+			risultatoRischiaText += "Sacchetto: (Bianchi: " + bianchiSacchetto + ", Neri: " + neriSacchetto + ")";
+			return risultatoRischiaText;
 		}
 
 	},
